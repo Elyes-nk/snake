@@ -1,0 +1,105 @@
+
+<div style="position: absolute; left: 45%;">
+    <h1>Snake Man 🐍</h1>
+</div>
+<canvas id="plate" 
+        width ="400" 
+        height="400" 
+        style="position: absolute;
+        left: 35%; top: 10% ">
+</canvas>
+<div style="position: absolute; left: 49%; top: 68%">
+    <h1>Score 
+        <p style="position: absolute; left:38%;" id="output"></p>
+    </h1>
+</div>
+<h3 style="position: absolute; left: 44%; top: 88%" id="outputloose"></h3>
+
+<script>
+    window.onload=function() {
+        c=document.getElementById('plate');
+        cc=c.getContext('2d');
+        document.addEventListener("keydown",keyPush)
+        setInterval(game, 1000/20);
+    }
+    //changement in position
+    xv=yv=0;
+    //snake position
+    px=py=10;
+    //cells size
+    gs=tc=20;
+    //food position
+    ax=ay=15;
+    //snake body
+    trail=[];
+    tail = 5;
+    //score
+    score=0;
+    looser="";
+    function keyPush(e) {
+        switch(e.keyCode){
+            case 37:
+                xv=-1;yv=0
+                break;
+            case 38:
+                xv=0;yv=-1
+                break;
+            case 39:
+                xv=1;yv=0
+                break;
+            case 40:
+                xv=0;yv=1
+                break;
+
+        }
+    }
+    function game() {
+        px+=xv;
+        py+=yv;
+        if(px<0) {
+            px = tc-1;
+        }
+        if(py<0) {
+            py = tc-1;
+        }
+        if(px>tc-1) {
+            px = 0;
+        }
+        if(py>tc-1) {
+            py = 0;
+        }
+        //plate
+        cc.fillStyle='black';
+        cc.fillRect(0,0,c.width,c.height);
+        //snake
+        cc.fillStyle='white';
+        for(var i=0; i<trail.length; i++) {
+            cc.fillRect(trail[i].x*gs, trail[i].y*gs, gs-2, gs-2);
+            //game restart
+            if(trail[i].x == px && trail[i].y == py) {
+                tail = 5;
+                score = 0;
+                looser = "Essaye même pas, t'es null ! 😂"
+                document.getElementById("output").innerHTML=score;
+                document.getElementById("outputloose").innerHTML=looser;
+            }
+        }
+        trail.push({x:px,y:py});
+        while(trail.length>tail) {
+            trail.shift();
+        }
+        //eat and grow 
+        if(ax == px && ay == py) {
+                tail++;
+                score+=5;
+                looser = "Bon.. j'ai rien dis... 🙄";
+                document.getElementById("output").innerHTML=score;
+                document.getElementById("outputloose").innerHTML=looser;
+                ax=Math.floor(Math.random()*tc);
+                ay=Math.floor(Math.random()*tc);
+            }
+        cc.fillStyle='red';
+        cc.fillRect(ax*gs, ay*gs, gs-2, gs-2);
+    }
+
+</script>
